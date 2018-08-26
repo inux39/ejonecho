@@ -28,7 +28,14 @@ fn main() {
 		let now = time::now();
 		let ejotime = ejotime(now.tm_hour, now.tm_min);
 		let han = if is_half(now.tm_min) { "半" } else { "" };
-		println!(":ejoneco: < {}{}時{}", says.trim(), ejotime, han);
+		let (hour, pm) = pm_time(ejotime);
+		println!(":ejoneco: < {}{}時{}", says.trim(),
+			if pm {
+				format!("午後{}", hour)
+			} else {
+				format!("{}", hour)
+			}
+			, han);
 	} else {
 		println!(":ejoneco: < {}", says.trim());
 	}
