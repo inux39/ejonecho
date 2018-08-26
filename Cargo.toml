@@ -1,0 +1,9 @@
+[package]
+name = "ejonecho"
+version = "0.0.1"
+authors = ["inux39 <inux39@protonmail.ch>"]
+
+[dependencies]
+clap = "2.32.0"
+time = "0.1.40"
+
