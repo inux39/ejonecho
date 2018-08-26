@@ -33,7 +33,7 @@ fn main() {
 			if pm {
 				format!("午後{}", hour)
 			} else {
-				format!("{}", hour)
+				format!("午前{}", hour)
 			}
 			, han);
 	} else {
