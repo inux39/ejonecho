@@ -5,17 +5,17 @@ ejo090 jidou botto ni shita
 ## Usage
 ```
 $ ejonecho "グエー"
-:ejoneco: グエー
+:ejoneco: < グエー
 ```
 
 ```
 $ ejonecho "ウヒョー" -t
-:ejoneco: ウヒョー4時
+:ejoneco: < ウヒョー4時
 ```
 
 ```
 $ echo "ドヒャー" | ejonecho -t
-:ejoneco: ドヒャー4時
+:ejoneco: < ドヒャー4時
 ```
 
 ## Build
