@@ -11,6 +11,9 @@ fn main() {
 		.arg(Arg::with_name("time")
 			.short("t")
 			.help("Output about time"))
+		.arg(Arg::with_name("ampm")
+			.short("s")
+			.help("Output a.m./p.m. time"))
 		.arg(Arg::with_name("INPUT")
 			.takes_value(true)
 			.help("A word to speak"))
@@ -28,7 +31,18 @@ fn main() {
 		let now = time::now();
 		let ejotime = ejotime(now.tm_hour, now.tm_min);
 		let han = if is_half(now.tm_min) { "半" } else { "" };
-		println!(":ejoneco: < {}{}時{}", says.trim(), ejotime, han);
+		let (hour, pm) = pm_time(ejotime);
+		if clap.is_present("ampm") {
+			println!(":ejoneco: < {}{}時{}", says.trim(),
+				if pm {
+					format!("午後{}", hour)
+				} else {
+					format!("午前{}", hour)
+				}
+				, han);
+		} else {
+			println!(":ejoneco: < {}{}時{}", says.trim(), ejotime, han);
+		}
 	} else {
 		println!(":ejoneco: < {}", says.trim());
 	}
