@@ -1,8 +1,10 @@
 extern crate clap;
 extern crate time;
+extern crate mammut;
+extern crate toml;
 
 use clap::{Arg, App};
-
+mod mastodon;
 fn main() {
 	let clap = App::new(env!("CARGO_PKG_NAME"))
 		.version(env!("CARGO_PKG_VERSION"))
@@ -11,6 +13,9 @@ fn main() {
 		.arg(Arg::with_name("time")
 			.short("t")
 			.help("Output about time"))
+		.arg(Arg::with_name("post")
+			.short("p")
+			.help("Post to Mastodon"))
 		.arg(Arg::with_name("INPUT")
 			.takes_value(true)
 			.help("A word to speak"))
@@ -24,13 +29,20 @@ fn main() {
 			std::borrow::Cow::from(s.clone())
 		},
 	};
+	let mut ejo_says = String::new();
 	if clap.is_present("time") {
 		let now = time::now();
 		let ejotime = ejotime(now.tm_hour, now.tm_min);
 		let han = if is_half(now.tm_min) { "半" } else { "" };
-		println!(":ejoneco: < {}{}時{}", says.trim(), ejotime, han);
+		ejo_says = format!(":ejoneco: < {}{}時{}", says.trim(), ejotime, han);
 	} else {
-		println!(":ejoneco: < {}", says.trim());
+		ejo_says = format!(":ejoneco: < {}", says.trim());
+	}
+
+	if clap.is_present("post") {
+		mastodon::toot(ejo_says);
+	} else {
+		println!("{}", ejo_says);
 	}
 }
 

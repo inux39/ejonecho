@@ -6,4 +6,6 @@ authors = ["inux39 <inux39@protonmail.ch>"]
 [dependencies]
 clap = "2.32.0"
 time = "0.1.40"
+mammut = "0.11.0"
+toml = "*"
 
