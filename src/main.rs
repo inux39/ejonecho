@@ -1,7 +1,3 @@
-extern crate clap;
-extern crate time;
-extern crate mammut;
-extern crate toml;
 mod error;
 mod mastodon;
 

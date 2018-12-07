@@ -2,6 +2,7 @@
 name = "ejonecho"
 version = "0.0.2"
 authors = ["inux39 <inux39@protonmail.ch>"]
+edition = "2018"
 
 [dependencies]
 clap = "2.32"

@@ -3,7 +3,7 @@ use mammut::apps::{AppBuilder, Scopes};
 use mammut::status_builder::StatusBuilder;
 use std::fs::File;
 use std::io::{Read, Write};
-use error::Result;
+use super::error::Result;
 
 const FILE: &'static str = "mastodon.toml";
 
