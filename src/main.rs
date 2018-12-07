@@ -2,12 +2,16 @@ extern crate clap;
 extern crate time;
 extern crate mammut;
 extern crate toml;
+mod error;
+mod mastodon;
 
 use clap::{Arg, App};
-mod mastodon;
+use std::error::Error;
+
 fn main() {
 	let clap = App::new(env!("CARGO_PKG_NAME"))
 		.version(env!("CARGO_PKG_VERSION"))
+		.version_short("v")
 		.author(env!("CARGO_PKG_AUTHORS"))
 		.about("ejo says")
 		.arg(Arg::with_name("time")
@@ -17,7 +21,7 @@ fn main() {
 			.short("s")
 			.help("Output a.m./p.m. time"))
 		.arg(Arg::with_name("post")
-			.short("p")
+			.long("post")
 			.help("Post to Mastodon"))
 		.arg(Arg::with_name("INPUT")
 			.takes_value(true)
@@ -32,31 +36,46 @@ fn main() {
 			std::borrow::Cow::from(s.clone())
 		},
 	};
-	let mut ejo_says = String::new();
-	if clap.is_present("time") {
-		let now = time::now();
-		let ejotime = ejotime(now.tm_hour, now.tm_min);
-		let han = if is_half(now.tm_min) { "半" } else { "" };
-		let (hour, pm) = pm_time(ejotime);
-		if clap.is_present("ampm") {
-			ejo_says = format!(":ejoneco: < {}{}時{}", says.trim(),
-				if pm {
-					format!("午後{}", hour)
-				} else {
-					format!("午前{}", hour)
-				}
-				, han);
+	let ejo_says = format!(":ejoneco: < {}{}", says.trim(),
+		if clap.is_present("time") {
+			ejo_jiho(clap.is_present("ampm"))
 		} else {
-			ejo_says = format!(":ejoneco: < {}{}時{}", says.trim(), ejotime, han);
+			"".to_string()
 		}
-	} else {
-		ejo_says = format!(":ejoneco: < {}", says.trim());
-	}
+	);
 
 	if clap.is_present("post") {
-		mastodon::toot(ejo_says);
+		println!("{}", ejo_says);
+		match mastodon::toot(ejo_says) {
+			Ok(_) => {},
+			Err(e) => println!("{}", e.description()),
+		};
 	} else {
 		println!("{}", ejo_says);
+	}
+}
+
+fn ejo_jiho(ampm: bool) -> String {
+	let now = time::now();
+	let ejotime = ejotime(now.tm_hour, now.tm_min);
+	let han = is_half_to_str(now.tm_min);
+	let hour = pm_time(ejotime);
+
+	format!("{}時{}",
+		if ampm {
+			hour
+		} else {
+			ejotime
+		},
+		han
+	)
+}
+
+fn is_half_to_str(min: i32) -> &'static str {
+	if is_half(min) {
+		"半"
+	} else {
+		""
 	}
 }
 
@@ -76,15 +95,15 @@ fn ejotime(h: i32, m: i32) -> i32 {
 	}
 }
 
-fn pm_time(t: i32) -> (i32, bool) {
+fn pm_time(t: i32) -> i32 {
 	if t > 12 {
-		(t - 12, true)
+		t - 12
 	} else if t == 12 {
-		(12, true)
+		12
 	} else if t == 0 {
-		(12, false)
+		12
 	} else {
-		(t, false)
+		t
 	}
 }
 
@@ -106,6 +125,7 @@ fn test_is_half() {
 	assert!(is_half(41) == false);
 }
 
+/*
 #[test]
 fn test_pm_time() {
 	assert!(pm_time(12) == (12, true));
@@ -113,4 +133,5 @@ fn test_pm_time() {
 	assert!(pm_time(15) == (3, true));
 	assert!(pm_time(1) == (1, false));
 }
+*/
 

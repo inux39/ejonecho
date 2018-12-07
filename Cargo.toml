@@ -4,8 +4,8 @@ version = "0.0.2"
 authors = ["inux39 <inux39@protonmail.ch>"]
 
 [dependencies]
-clap = "2.32.0"
-time = "0.1.40"
-mammut = "0.11.0"
-toml = "*"
+clap = "2.32"
+time = "0.1"
+mammut = "0.12"
+toml = "0.4"
 
